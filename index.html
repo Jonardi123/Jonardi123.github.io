@@ -33,11 +33,15 @@
     html[data-theme="dark"] .stars { opacity:1; } html.raining .stars { opacity:.32; }
 
     .cloud {
+      --cloud-scale:1;
       position:absolute;
+      left:0;
       width:var(--cw); height:var(--ch); top:var(--ct);
       border-radius:48% 52% 46% 54% / 62% 58% 42% 38%;
       background:linear-gradient(180deg,rgba(91,111,139,.98) 0%,rgba(60,79,104,.98) 55%,rgba(37,52,72,.99) 100%);
-      opacity:.88; animation:drift linear infinite;
+      opacity:.88;
+      animation:drift var(--base-dur) linear infinite;
+      will-change:transform;
       transition:filter .35s ease,opacity .35s ease;
       box-shadow:inset 0 -13px 20px rgba(12,22,36,.22),inset 0 8px 16px rgba(185,205,225,.07),0 8px 22px rgba(4,10,18,.08);
     }
@@ -48,18 +52,23 @@
     .cloud::after { width:55%; height:160%; right:3%; top:-80%; transform:rotate(8deg); }
     .cloud .puff { position:absolute; display:block; width:47%; height:128%; left:32%; top:-50%; border-radius:50%; background:inherit; box-shadow:inherit; }
     html[data-theme="dark"] .cloud { opacity:.22; }
-    .cloud.far { filter:blur(3.2px); opacity:.1 !important; transform:scale(.82); }
-    .cloud.near { filter:blur(.65px); opacity:.34 !important; }
+    .cloud.far { --cloud-scale:.82; filter:blur(3.2px); opacity:.1 !important; }
+    .cloud.near { --cloud-scale:1; filter:blur(.65px); opacity:.34 !important; }
     html.storm-light .cloud.near { opacity:.24 !important; }
     html.storm-heavy .cloud.near { opacity:.43 !important; filter:blur(.4px) brightness(.9); }
     html.thunder .cloud { filter:brightness(2.05) saturate(.78); }
-    .c1 { --cw:190px;--ch:54px;--ct:9%;animation-duration:48s; }
-    .c2 { --cw:260px;--ch:66px;--ct:16%;animation-duration:64s;animation-delay:-20s; }
-    .c3 { --cw:150px;--ch:46px;--ct:31%;animation-duration:40s;animation-delay:-8s; }
-    .c4 { --cw:320px;--ch:76px;--ct:5%;animation-duration:72s;animation-delay:-40s; }
-    .c5 { --cw:210px;--ch:58px;--ct:42%;animation-duration:54s;animation-delay:-12s; }
-    @keyframes drift { from { translate:-34vw 0; } to { translate:112vw 0; } }
-    html.gust .cloud { animation-duration:calc(var(--base-dur,55s) / 1.6) !important; translate:8px 0; }
+    html.gust .cloud { filter:brightness(.97) blur(var(--gust-blur,0px)); }
+    .cloud.far { --gust-blur:3.3px; }
+    .cloud.near { --gust-blur:.7px; }
+    .c1 { --cw:190px;--ch:54px;--ct:9%;--base-dur:48s;animation-delay:0s; }
+    .c2 { --cw:260px;--ch:66px;--ct:16%;--base-dur:64s;animation-delay:-20s; }
+    .c3 { --cw:150px;--ch:46px;--ct:31%;--base-dur:40s;animation-delay:-8s; }
+    .c4 { --cw:320px;--ch:76px;--ct:5%;--base-dur:72s;animation-delay:-40s; }
+    .c5 { --cw:210px;--ch:58px;--ct:42%;--base-dur:54s;animation-delay:-12s; }
+    @keyframes drift {
+      from { transform:translate3d(calc(-1 * var(--cw) - 10vw),0,0) scale(var(--cloud-scale)); }
+      to { transform:translate3d(calc(100vw + var(--cw) + 10vw),0,0) scale(var(--cloud-scale)); }
+    }
 
     .loom { position:absolute; left:50%; top:-8%; width:280px; height:70px; margin-left:-140px; background:#44566c; border-radius:999px; opacity:0; filter:blur(3px); }
     .loom::before,.loom::after { content:""; position:absolute; background:#44566c; border-radius:50%; }
@@ -115,7 +124,7 @@
 <body>
   <div class="sky" aria-hidden="true">
     <div class="stars"></div>
-    <div class="cloud c1 near" style="--base-dur:48s"><i class="puff"></i></div><div class="cloud c2 far" style="--base-dur:64s"><i class="puff"></i></div><div class="cloud c3 near" style="--base-dur:40s"><i class="puff"></i></div><div class="cloud c4 far" style="--base-dur:72s"><i class="puff"></i></div><div class="cloud c5 near" style="--base-dur:54s"><i class="puff"></i></div>
+    <div class="cloud c1 near"><i class="puff"></i></div><div class="cloud c2 far"><i class="puff"></i></div><div class="cloud c3 near"><i class="puff"></i></div><div class="cloud c4 far"><i class="puff"></i></div><div class="cloud c5 near"><i class="puff"></i></div>
     <div class="loom l1"></div><div class="loom l2"></div><div class="loom l3"></div>
     <div class="rain" id="rain"></div><div class="lightning" id="lightning"></div>
     <img class="storm-jet" id="stormJet" src="assets/fighter-jet-side.png" alt="" />
