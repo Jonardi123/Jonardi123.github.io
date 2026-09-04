@@ -40,15 +40,12 @@
         radial-gradient(circle at 45% 67%,rgba(145,160,181,.2) 0 6%,transparent 7%),
         radial-gradient(circle at 72% 73%,rgba(155,171,191,.18) 0 4%,transparent 5%),
         radial-gradient(circle at 40% 38%,#f7fbff 0,#dce8f5 58%,#bfcddd 100%);
-      box-shadow:0 0 18px rgba(214,232,255,.48),0 0 52px rgba(150,193,245,.2);
-      transition:opacity .8s ease,filter .55s ease,box-shadow .55s ease;
+      filter:brightness(.82) saturate(.82);
+      box-shadow:0 0 14px rgba(214,232,255,.26),0 0 38px rgba(150,193,245,.1);
+      transition:opacity .8s ease;
     }
-    html[data-theme="dark"] .moon { opacity:.9; }
-    html.raining .moon { opacity:.76; }
-    html.moon-covered .moon { opacity:.24; filter:brightness(.58) saturate(.72); box-shadow:0 0 8px rgba(180,205,235,.12); }
-    html.moon-covered .wrap { filter:brightness(.82) saturate(.9); }
-    html.moon-covered .puddle { filter:brightness(.72) saturate(.8); }
-    html.moon-covered .stars { opacity:.16; }
+    html[data-theme="dark"] .moon { opacity:.56; }
+    html.raining .moon { opacity:.48; }
 
     .cloud {
       --cloud-scale:1;
@@ -147,12 +144,12 @@
     .storm-jet { position:absolute; z-index:2; top:15%; left:-28vw; width:180px; opacity:0; filter:brightness(.12) saturate(.3) blur(.3px); transform:rotate(-3deg); }
     html.jet-pass .storm-jet { animation:storm-jet-pass 5.8s linear both; }
     @keyframes storm-jet-pass { 0%{left:-28vw;opacity:0;transform:translateY(0) scale(.72) rotate(-3deg)}12%{opacity:.12}78%{opacity:.09}100%{left:112vw;opacity:0;transform:translateY(18vh) scale(.58) rotate(2deg)} }
-    .puddle { position:fixed; z-index:1; left:50%; bottom:-18px; width:min(760px,92vw); height:90px; transform:translateX(-50%); opacity:0; pointer-events:none; overflow:hidden; border-radius:50%; background:radial-gradient(ellipse at center,rgba(135,185,235,.12),rgba(90,135,190,.05) 45%,transparent 72%); filter:blur(.2px); transition:opacity 1.4s ease,filter .55s ease; }
+    .puddle { position:fixed; z-index:1; left:50%; bottom:-18px; width:min(760px,92vw); height:90px; transform:translateX(-50%); opacity:0; pointer-events:none; overflow:hidden; border-radius:50%; background:radial-gradient(ellipse at center,rgba(135,185,235,.12),rgba(90,135,190,.05) 45%,transparent 72%); filter:blur(.2px); transition:opacity 1.4s ease; }
     html.raining .puddle { opacity:.9; }
     .puddle::before,.puddle::after { content:""; position:absolute; left:12%; right:12%; height:1px; top:34%; background:linear-gradient(90deg,transparent,rgba(205,230,255,.3),transparent); animation:ripple 3.8s ease-in-out infinite; transform:scaleX(.35); opacity:.35; }
     .puddle::after { top:56%; animation-delay:-1.7s; }
     @keyframes ripple { 0%,100%{transform:scaleX(.25);opacity:0}45%{transform:scaleX(1);opacity:.4} }
-    .wrap { position:relative; z-index:2; height:100dvh; overflow-y:auto; overflow-x:hidden; max-width:860px; margin:0 auto; padding:28px 18px 80px; transition:transform .7s ease,filter .55s ease; }
+    .wrap { position:relative; z-index:2; height:100dvh; overflow-y:auto; overflow-x:hidden; max-width:860px; margin:0 auto; padding:28px 18px 80px; transition:transform .7s ease; }
     html.gust .wrap { transform:translateX(1.5px); }
     header { display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:28px;font-size:13px;letter-spacing:.08em;transition:box-shadow .18s ease,text-shadow .18s ease; }
     .actions { display:flex;align-items:center;gap:9px; }
@@ -194,11 +191,11 @@
   </div>
   <script>
     (function(){
-      var root=document.documentElement,btn=document.getElementById("theme"),soundBtn=document.getElementById("sound"),meta=document.querySelector('meta[name="theme-color"]'),rain=document.getElementById("rain"),lightning=document.getElementById("lightning"),moon=document.getElementById("moon"),lede=document.getElementById("lede");
+      var root=document.documentElement,btn=document.getElementById("theme"),soundBtn=document.getElementById("sound"),meta=document.querySelector('meta[name="theme-color"]'),rain=document.getElementById("rain"),lightning=document.getElementById("lightning"),lede=document.getElementById("lede");
       var text="Local-first AI tools. Consumer GPU. No cloud required to chat. I build the product around the model — routing, tools, memory, receipts, traces. The model is swappable. The layer is not.";
       lede.innerHTML=text.split("").map(function(c){return c===" "?" ":"<span class=\"ch\">"+c+"</span>"}).join("");
       if(rain&&!rain.childNodes.length){var html="";for(var i=0;i<62;i++){var dur=(.5+Math.random()*.52).toFixed(2)+"s";html+='<span class="drop" style="left:'+(i*1.65+Math.random()*1.4)+'%;--fall:'+dur+';animation-delay:'+(Math.random()*1.4)+'s"></span>'}rain.innerHTML=html}
-      var hitTimer=null,rainTimer=null,thunderTimer=null,gustTimer=null,stormTimer=null,jetTimer=null,audioCtx=null,soundOn=false,activeCloud=null,moonRaf=null,lastMoonCheck=0;
+      var hitTimer=null,rainTimer=null,thunderTimer=null,gustTimer=null,stormTimer=null,jetTimer=null,audioCtx=null,soundOn=false,activeCloud=null;
       function stopHits(){if(hitTimer){clearTimeout(hitTimer);hitTimer=null}document.querySelectorAll(".splash").forEach(function(n){n.remove()})}
       function hit(){if(!root.classList.contains("raining"))return;var letters=document.querySelectorAll("#title .ch");if(!letters.length)return;var el=letters[Math.floor(Math.random()*letters.length)],s=document.createElement("i");s.className="splash";s.style.left=(28+Math.random()*44)+"%";s.style.top=(12+Math.random()*42)+"%";el.appendChild(s);setTimeout(function(){if(s.parentNode)s.remove()},440);var base=root.classList.contains("storm-heavy")?170:root.classList.contains("storm-light")?520:320;hitTimer=setTimeout(hit,base+Math.random()*420)}
       function ensureAudio(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==="suspended")audioCtx.resume()}catch(e){}}
@@ -206,52 +203,17 @@
       function rumble(){makeNoise(2.8,110,170,.32)}
       function windSound(){makeNoise(1.6,380,620,.055)}
       function scheduleThunder(){if(thunderTimer)clearTimeout(thunderTimer);if(!root.classList.contains("raining"))return;var min=root.classList.contains("storm-heavy")?4500:7000,max=root.classList.contains("storm-heavy")?9000:17000;thunderTimer=setTimeout(thunder,min+Math.random()*(max-min))}
-      function chooseCloud(){
-        var clouds=Array.prototype.slice.call(document.querySelectorAll(".cloud.near"));
-        var visible=clouds.filter(function(c){var r=c.getBoundingClientRect();return r.right>40&&r.left<window.innerWidth-40&&r.bottom>0&&r.top<window.innerHeight*.62});
-        var pool=visible.length?visible:clouds;
-        return pool[Math.floor(Math.random()*pool.length)];
-      }
-      function thunder(){
-        if(!root.classList.contains("raining"))return;
-        if(activeCloud)activeCloud.classList.remove("strike");
-        activeCloud=chooseCloud();
-        if(!activeCloud){scheduleThunder();return}
-        var r=activeCloud.getBoundingClientRect();
-        if(lightning){lightning.style.setProperty("--flash-x",Math.max(0,Math.min(100,((r.left+r.width*.52)/window.innerWidth)*100))+"%");lightning.style.setProperty("--flash-y",Math.max(0,Math.min(100,((r.top+r.height*.55)/window.innerHeight)*100))+"%")}
-        activeCloud.classList.remove("strike");void activeCloud.offsetWidth;activeCloud.classList.add("strike");
-        root.classList.remove("thunder");void root.offsetWidth;root.classList.add("thunder");
-        setTimeout(function(){root.classList.remove("thunder");if(activeCloud){activeCloud.classList.remove("strike");activeCloud=null}},720);
-        setTimeout(rumble,520+Math.random()*950);scheduleThunder();
-      }
+      function chooseCloud(){var clouds=Array.prototype.slice.call(document.querySelectorAll(".cloud.near"));var visible=clouds.filter(function(c){var r=c.getBoundingClientRect();return r.right>40&&r.left<window.innerWidth-40&&r.bottom>0&&r.top<window.innerHeight*.62});var pool=visible.length?visible:clouds;return pool[Math.floor(Math.random()*pool.length)]}
+      function thunder(){if(!root.classList.contains("raining"))return;if(activeCloud)activeCloud.classList.remove("strike");activeCloud=chooseCloud();if(!activeCloud){scheduleThunder();return}var r=activeCloud.getBoundingClientRect();if(lightning){lightning.style.setProperty("--flash-x",Math.max(0,Math.min(100,((r.left+r.width*.52)/window.innerWidth)*100))+"%");lightning.style.setProperty("--flash-y",Math.max(0,Math.min(100,((r.top+r.height*.55)/window.innerHeight)*100))+"%")}activeCloud.classList.remove("strike");void activeCloud.offsetWidth;activeCloud.classList.add("strike");root.classList.remove("thunder");void root.offsetWidth;root.classList.add("thunder");setTimeout(function(){root.classList.remove("thunder");if(activeCloud){activeCloud.classList.remove("strike");activeCloud=null}},720);setTimeout(rumble,520+Math.random()*950);scheduleThunder()}
       function scheduleGust(){if(gustTimer)clearTimeout(gustTimer);if(!root.classList.contains("raining"))return;gustTimer=setTimeout(function(){root.classList.add("gust");windSound();setTimeout(function(){root.classList.remove("gust");scheduleGust()},1100+Math.random()*1300)},5000+Math.random()*9000)}
       function setStorm(level){root.classList.remove("storm-light","storm-medium","storm-heavy");root.classList.add("storm-"+level)}
       function scheduleStormCycle(){if(stormTimer)clearTimeout(stormTimer);if(!root.classList.contains("raining"))return;stormTimer=setTimeout(function(){var r=Math.random();setStorm(r<.28?"light":r<.76?"medium":"heavy");scheduleStormCycle()},9000+Math.random()*13000)}
       function scheduleJet(){if(jetTimer)clearTimeout(jetTimer);if(!root.classList.contains("raining"))return;jetTimer=setTimeout(function(){if(Math.random()<.38){root.classList.remove("jet-pass");void root.offsetWidth;root.classList.add("jet-pass");setTimeout(function(){root.classList.remove("jet-pass")},6000)}scheduleJet()},18000+Math.random()*26000)}
-      function updateMoonShadow(ts){
-        if(ts-lastMoonCheck>110){
-          lastMoonCheck=ts;
-          var covered=false;
-          if(moon&&root.getAttribute("data-theme")==="dark"){
-            var m=moon.getBoundingClientRect(),moonArea=Math.max(1,m.width*m.height);
-            document.querySelectorAll(".cloud").forEach(function(c){
-              if(covered)return;
-              var r=c.getBoundingClientRect();
-              var ox=Math.max(0,Math.min(r.right,m.right)-Math.max(r.left,m.left));
-              var oy=Math.max(0,Math.min(r.bottom,m.bottom)-Math.max(r.top,m.top));
-              if((ox*oy)/moonArea>.08)covered=true;
-            });
-          }
-          root.classList.toggle("moon-covered",covered);
-        }
-        moonRaf=requestAnimationFrame(updateMoonShadow);
-      }
       function stopWeatherTimers(){[thunderTimer,gustTimer,stormTimer,jetTimer].forEach(function(t){if(t)clearTimeout(t)});thunderTimer=gustTimer=stormTimer=jetTimer=null;if(activeCloud){activeCloud.classList.remove("strike");activeCloud=null}root.classList.remove("thunder","gust","jet-pass","storm-light","storm-medium","storm-heavy")}
-      function apply(mode){root.classList.remove("raining","moon-covered");stopHits();stopWeatherTimers();if(rainTimer){clearTimeout(rainTimer);rainTimer=null}root.setAttribute("data-theme",mode);try{localStorage.setItem("theme",mode)}catch(e){}if(btn)btn.textContent=mode==="dark"?"Light":"Dark";if(meta)meta.setAttribute("content",mode==="dark"?"#06101c":"#7ec8ff");document.querySelectorAll(".loom").forEach(function(n){n.style.animation="none";void n.offsetWidth;n.style.animation=""});if(mode==="dark"){rainTimer=setTimeout(function(){root.classList.add("raining");setStorm("medium");hit();scheduleThunder();scheduleGust();scheduleStormCycle();scheduleJet()},3000)}}
+      function apply(mode){root.classList.remove("raining");stopHits();stopWeatherTimers();if(rainTimer){clearTimeout(rainTimer);rainTimer=null}root.setAttribute("data-theme",mode);try{localStorage.setItem("theme",mode)}catch(e){}if(btn)btn.textContent=mode==="dark"?"Light":"Dark";if(meta)meta.setAttribute("content",mode==="dark"?"#06101c":"#7ec8ff");document.querySelectorAll(".loom").forEach(function(n){n.style.animation="none";void n.offsetWidth;n.style.animation=""});if(mode==="dark"){rainTimer=setTimeout(function(){root.classList.add("raining");setStorm("medium");hit();scheduleThunder();scheduleGust();scheduleStormCycle();scheduleJet()},3000)}}
       function setSound(on){soundOn=on;if(on)ensureAudio();if(soundBtn){soundBtn.textContent=on?"Sound on":"Sound off";soundBtn.setAttribute("aria-pressed",on?"true":"false")}try{localStorage.setItem("storm-sound",on?"1":"0")}catch(e){}}
       var saved=null,savedSound="0";try{saved=localStorage.getItem("theme");savedSound=localStorage.getItem("storm-sound")||"0"}catch(e){}
       setSound(savedSound==="1");apply(saved==="dark"?"dark":"light");
-      if(!moonRaf)moonRaf=requestAnimationFrame(updateMoonShadow);
       if(btn)btn.addEventListener("click",function(){ensureAudio();apply(root.getAttribute("data-theme")==="dark"?"light":"dark")});
       if(soundBtn)soundBtn.addEventListener("click",function(){setSound(!soundOn)});
       document.addEventListener("pointerdown",function(){if(soundOn)ensureAudio()},{once:true});
