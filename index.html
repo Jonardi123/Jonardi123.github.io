@@ -29,6 +29,7 @@
     body { color:var(--fg); font-family:"Source Sans 3",ui-sans-serif,system-ui,sans-serif; font-size:17px; line-height:1.55; background:linear-gradient(180deg,var(--bg0),var(--bg1) 42%,var(--bg2)); transition:background .35s ease,color .25s ease,filter .18s ease; }
     .sky { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0; }
     .hud { position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:3; }
+    .sky-top { position:absolute; inset:0; z-index:2; pointer-events:none; will-change:transform; }
     .stars { position:absolute; inset:0; z-index:0; opacity:0; transition:opacity .4s ease; background-image:radial-gradient(1px 1px at 12% 18%,#fff,transparent),radial-gradient(1.5px 1.5px at 28% 36%,#d7e8ff,transparent),radial-gradient(1px 1px at 63% 14%,#fff,transparent),radial-gradient(2px 2px at 81% 44%,#fff,transparent),radial-gradient(1px 1px at 47% 72%,#cfe0ff,transparent); }
     html[data-theme="dark"] .stars { opacity:1; } html.raining .stars { opacity:.32; }
 
@@ -163,8 +164,10 @@
 <body>
   <div class="sky" aria-hidden="true">
     <div class="stars"></div>
-    <div class="moon" id="moon"></div>
-    <div class="cloud c1 near"><i class="puff"></i><i class="bolt"></i></div><div class="cloud c2 far"><i class="puff"></i><i class="bolt"></i></div><div class="cloud c3 near"><i class="puff"></i><i class="bolt"></i></div><div class="cloud c4 far"><i class="puff"></i><i class="bolt"></i></div><div class="cloud c5 near"><i class="puff"></i><i class="bolt"></i></div>
+    <div class="sky-top" id="skyTop">
+      <div class="moon" id="moon"></div>
+      <div class="cloud c1 near"><i class="puff"></i><i class="bolt"></i></div><div class="cloud c2 far"><i class="puff"></i><i class="bolt"></i></div><div class="cloud c3 near"><i class="puff"></i><i class="bolt"></i></div><div class="cloud c4 far"><i class="puff"></i><i class="bolt"></i></div><div class="cloud c5 near"><i class="puff"></i><i class="bolt"></i></div>
+    </div>
     <div class="loom l1"></div><div class="loom l2"></div><div class="loom l3"></div>
     <div class="rain" id="rain"></div><div class="lightning" id="lightning"></div>
     <img class="storm-jet" id="stormJet" src="assets/fighter-jet-side.png" alt="" />
@@ -175,7 +178,7 @@
     <div class="flight flight-middle"><span class="contrail"></span><div class="jet-views"><img class="jet-sprite jet-top-view" src="assets/fighter-jet.png" alt="" /><img class="jet-sprite jet-side-view" src="assets/fighter-jet-side.png" alt="" /></div></div>
     <div class="flight flight-bottom"><span class="contrail"></span><div class="jet-views"><img class="jet-sprite jet-top-view" src="assets/fighter-jet.png" alt="" /><img class="jet-sprite jet-side-view" src="assets/fighter-jet-side.png" alt="" /></div></div>
   </div></div>
-  <div class="wrap">
+  <div class="wrap" id="wrap">
     <header><div class="brand">local layer / 570</div><div class="actions"><div class="live">eval first</div><button class="sound-toggle" id="sound" type="button" aria-pressed="false">Sound off</button><button class="theme" id="theme" type="button">Dark</button></div></header>
     <div class="title-wrap"><h1 id="title"><span class="ch">J</span><span class="ch">o</span><span class="ch">n</span><span class="ch ital">a</span><span class="ch ital">r</span><span class="ch ital">d</span></h1><div class="wet-clip" aria-hidden="true">Jonard</div></div>
     <div class="lede-wrap"><p class="lede" id="lede"></p></div>
@@ -191,10 +194,11 @@
   </div>
   <script>
     (function(){
-      var root=document.documentElement,btn=document.getElementById("theme"),soundBtn=document.getElementById("sound"),meta=document.querySelector('meta[name="theme-color"]'),rain=document.getElementById("rain"),lightning=document.getElementById("lightning"),lede=document.getElementById("lede");
+      var root=document.documentElement,btn=document.getElementById("theme"),soundBtn=document.getElementById("sound"),meta=document.querySelector('meta[name="theme-color"]'),rain=document.getElementById("rain"),lightning=document.getElementById("lightning"),lede=document.getElementById("lede"),wrap=document.getElementById("wrap"),skyTop=document.getElementById("skyTop");
       var text="Local-first AI tools. Consumer GPU. No cloud required to chat. I build the product around the model — routing, tools, memory, receipts, traces. The model is swappable. The layer is not.";
       lede.innerHTML=text.split("").map(function(c){return c===" "?" ":"<span class=\"ch\">"+c+"</span>"}).join("");
       if(rain&&!rain.childNodes.length){var html="";for(var i=0;i<62;i++){var dur=(.5+Math.random()*.52).toFixed(2)+"s";html+='<span class="drop" style="left:'+(i*1.65+Math.random()*1.4)+'%;--fall:'+dur+';animation-delay:'+(Math.random()*1.4)+'s"></span>'}rain.innerHTML=html}
+      if(wrap&&skyTop){var scrollTick=false;function syncSky(){skyTop.style.transform="translate3d(0,"+(-wrap.scrollTop)+"px,0)";scrollTick=false}wrap.addEventListener("scroll",function(){if(!scrollTick){scrollTick=true;requestAnimationFrame(syncSky)}},{passive:true});syncSky()}
       var hitTimer=null,rainTimer=null,thunderTimer=null,gustTimer=null,stormTimer=null,jetTimer=null,audioCtx=null,soundOn=false,activeCloud=null;
       function stopHits(){if(hitTimer){clearTimeout(hitTimer);hitTimer=null}document.querySelectorAll(".splash").forEach(function(n){n.remove()})}
       function hit(){if(!root.classList.contains("raining"))return;var letters=document.querySelectorAll("#title .ch");if(!letters.length)return;var el=letters[Math.floor(Math.random()*letters.length)],s=document.createElement("i");s.className="splash";s.style.left=(28+Math.random()*44)+"%";s.style.top=(12+Math.random()*42)+"%";el.appendChild(s);setTimeout(function(){if(s.parentNode)s.remove()},440);var base=root.classList.contains("storm-heavy")?170:root.classList.contains("storm-light")?520:320;hitTimer=setTimeout(hit,base+Math.random()*420)}
