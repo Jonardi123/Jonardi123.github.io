@@ -91,8 +91,8 @@
       align-items: center;
       width: 188px;
       height: 40px;
-      offset-rotate: auto;
-      animation: ride linear infinite;
+      transform-origin: 70% 50%;
+      will-change: transform;
     }
     .f16 svg {
       width: 108px;
@@ -110,29 +110,11 @@
       flex: 0 0 72px;
       opacity: 0.9;
     }
-    .f1 {
-      offset-path: path("M -160 92 C 220 92 340 92 520 92 C 720 92 720 -8 520 -8 C 320 -8 320 92 520 92 C 780 92 1200 70 1500 78");
-      animation-duration: 9s;
-    }
-    .f2 {
-      offset-path: path("M 1500 128 C 1100 128 980 128 780 128 C 560 128 560 8 780 8 C 1000 8 1000 128 780 128 C 500 128 160 150 -200 140");
-      animation-duration: 10.5s;
-      animation-delay: -3.4s;
-    }
     .f2 svg { width: 92px; height: 32px; flex-basis: 92px; }
-    .f3 {
-      offset-path: path("M -160 160 C 180 150 280 40 460 40 C 640 40 700 150 860 150 C 1040 150 1120 50 1500 60");
-      animation-duration: 8.2s;
-      animation-delay: -5.6s;
-    }
     .f3 svg { width: 84px; height: 30px; flex-basis: 84px; }
     .f1 .contrail { background: linear-gradient(90deg, transparent, #0a3a7a); }
     .f2 .contrail { background: linear-gradient(90deg, transparent, #fff); }
     .f3 .contrail { background: linear-gradient(90deg, transparent, #0a3a7a); }
-    @keyframes ride {
-      from { offset-distance: 0%; }
-      to { offset-distance: 100%; }
-    }
     .plane {
       position: absolute;
       left: 0;
@@ -320,8 +302,9 @@
       .f16 svg { width: 78px; height: 28px; flex-basis: 78px; }
     }
     @media (prefers-reduced-motion: reduce) {
-      .cloud, .plane, .f16 { animation: none; }
+      .cloud, .plane { animation: none; }
       .plane { left: 42%; }
+      .flock { display: none; }
     }
   </style>
 </head>
@@ -336,7 +319,7 @@
 
   <div class="hud" aria-hidden="true">
     <div class="flock" id="flock">
-      <div class="f16 f1">
+      <div class="f16 f1" id="jet1">
         <span class="contrail"></span>
         <svg viewBox="0 0 80 28" xmlns="http://www.w3.org/2000/svg">
           <polygon fill="#6d7784" points="22,16 8,26 28,16"/>
@@ -346,7 +329,7 @@
           <rect x="2" y="13" width="6" height="3" fill="#ff9a4a"/>
         </svg>
       </div>
-      <div class="f16 f2">
+      <div class="f16 f2" id="jet2">
         <span class="contrail"></span>
         <svg viewBox="0 0 80 28" xmlns="http://www.w3.org/2000/svg">
           <polygon fill="#6d7784" points="22,16 8,26 28,16"/>
@@ -356,7 +339,7 @@
           <rect x="2" y="13" width="6" height="3" fill="#ff9a4a"/>
         </svg>
       </div>
-      <div class="f16 f3">
+      <div class="f16 f3" id="jet3">
         <span class="contrail"></span>
         <svg viewBox="0 0 80 28" xmlns="http://www.w3.org/2000/svg">
           <polygon fill="#6d7784" points="22,16 8,26 28,16"/>
@@ -446,12 +429,78 @@
     (function () {
       var page = document.getElementById("page");
       var flock = document.getElementById("flock");
-      if (!page || !flock) return;
+      var jets = [
+        { el: document.getElementById("jet1"), dur: 9000, shift: 0, kind: "loop" },
+        { el: document.getElementById("jet2"), dur: 10500, shift: 0.38, kind: "back" },
+        { el: document.getElementById("jet3"), dur: 8200, shift: 0.62, kind: "wave" }
+      ];
+      if (!page || !flock || !jets[0].el) return;
+
       function sync() {
         flock.classList.toggle("is-away", page.scrollTop > 40);
       }
       page.addEventListener("scroll", sync, { passive: true });
       sync();
+
+      function pos(kind, t, w) {
+        var x, y;
+        if (kind === "loop") {
+          if (t < 0.26) {
+            var u = t / 0.26;
+            x = -180 + u * (w * 0.42 + 180);
+            y = 96;
+          } else if (t < 0.62) {
+            var u = (t - 0.26) / 0.36;
+            var a = Math.PI + u * Math.PI * 2;
+            var cx = w * 0.42, cy = 96, r = 78;
+            x = cx + Math.cos(a) * r;
+            y = cy + Math.sin(a) * r;
+          } else {
+            var u = (t - 0.62) / 0.38;
+            x = w * 0.42 + u * (w + 220 - w * 0.42);
+            y = 96;
+          }
+        } else if (kind === "back") {
+          if (t < 0.28) {
+            var u = t / 0.28;
+            x = w + 180 - u * (w * 0.38 + 180);
+            y = 128;
+          } else if (t < 0.64) {
+            var u = (t - 0.28) / 0.36;
+            var a = u * Math.PI * 2;
+            var cx = w * 0.62, cy = 128, r = 70;
+            x = cx - Math.cos(a) * r;
+            y = cy + Math.sin(a) * r;
+          } else {
+            var u = (t - 0.64) / 0.36;
+            x = w * 0.62 - u * (w * 0.62 + 220);
+            y = 128;
+          }
+        } else {
+          var u = t;
+          x = -180 + u * (w + 360);
+          y = 150 - Math.sin(u * Math.PI * 2) * 88;
+        }
+        return { x: x, y: y };
+      }
+
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduce) return;
+
+      function tick(now) {
+        var w = window.innerWidth;
+        for (var i = 0; i < jets.length; i++) {
+          var j = jets[i];
+          var t = ((now / j.dur) + j.shift) % 1;
+          var a = pos(j.kind, t, w);
+          var b = pos(j.kind, (t + 0.012) % 1, w);
+          var ang = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
+          j.el.style.transform =
+            "translate3d(" + a.x + "px," + a.y + "px,0) rotate(" + ang + "deg)";
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
     })();
   </script>
 </body>
