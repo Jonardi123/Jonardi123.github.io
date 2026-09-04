@@ -5,498 +5,116 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#7ec8ff" />
   <title>Jonard — local layer</title>
-  <meta name="description" content="Local-first AI tools. Consumer GPU." />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Source+Sans+3:wght@400;500;600&display=swap" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Source+Sans+3:wght@400;500;600&display=swap" />
   <style>
-    :root {
-      --bg0: #7ec8ff;
-      --bg1: #c9e8ff;
-      --bg2: #eaf6ff;
-      --fg: #0b2a4a;
-      --dim: #2f5474;
-      --acc: #0b6bff;
-      --acc2: #4db2ff;
-    }
+    :root { --bg0:#7ec8ff; --bg1:#c9e8ff; --bg2:#eaf6ff; --fg:#0b2a4a; --dim:#2f5474; --acc:#0b6bff; --acc2:#4db2ff; }
     * { box-sizing: border-box; }
-    html, body {
-      margin: 0;
-      height: 100%;
-      overflow: hidden;
-    }
-    body {
-      color: var(--fg);
-      font-family: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
-      font-size: 17px;
-      line-height: 1.55;
-      background: linear-gradient(180deg, var(--bg0) 0%, var(--bg1) 42%, var(--bg2) 100%);
-      text-rendering: optimizeLegibility;
-    }
-    .sky, .hud {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    .sky { z-index: 0; }
-    .hud { z-index: 8; }
-    .cloud {
-      position: absolute;
-      background: #fff;
-      border-radius: 999px;
-      opacity: 0.88;
-      will-change: transform;
-      animation: drift linear infinite;
-    }
-    .cloud::before,
-    .cloud::after {
-      content: "";
-      position: absolute;
-      background: #fff;
-      border-radius: 50%;
-    }
-    .c1 { width: 120px; height: 36px; top: 8%; animation-duration: 48s; }
-    .c1::before { width: 52px; height: 52px; left: 18px; top: -28px; }
-    .c1::after { width: 70px; height: 70px; left: 48px; top: -38px; }
-    .c2 { width: 160px; height: 42px; top: 18%; animation-duration: 64s; animation-delay: -20s; opacity: 0.75; }
-    .c2::before { width: 64px; height: 64px; left: 22px; top: -32px; }
-    .c2::after { width: 86px; height: 86px; left: 60px; top: -46px; }
-    .c3 { width: 90px; height: 28px; top: 32%; animation-duration: 40s; animation-delay: -8s; opacity: 0.7; }
-    .c3::before { width: 40px; height: 40px; left: 12px; top: -20px; }
-    .c3::after { width: 54px; height: 54px; left: 36px; top: -28px; }
-    .c4 { width: 200px; height: 48px; top: 6%; animation-duration: 72s; animation-delay: -40s; opacity: 0.55; }
-    .c4::before { width: 80px; height: 80px; left: 30px; top: -40px; }
-    .c4::after { width: 110px; height: 110px; left: 78px; top: -58px; }
-    .c5 { width: 110px; height: 32px; top: 44%; animation-duration: 54s; animation-delay: -12s; opacity: 0.5; }
-    .c5::before { width: 46px; height: 46px; left: 16px; top: -24px; }
-    .c5::after { width: 62px; height: 62px; left: 44px; top: -32px; }
-    @keyframes drift {
-      from { transform: translate3d(-30vw, 0, 0); }
-      to { transform: translate3d(110vw, 0, 0); }
-    }
-    .flock {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      opacity: 1;
-      transition: opacity 0.2s linear;
-    }
-    .flock.is-away { opacity: 0; }
-    .f16 {
-      position: absolute;
-      top: 0;
-      left: 0;
-      display: flex;
-      align-items: center;
-      width: 188px;
-      height: 40px;
-      transform-origin: 70% 50%;
-      will-change: transform;
-    }
-    .f16 svg {
-      width: 108px;
-      height: 38px;
-      display: block;
-      overflow: visible;
-      flex: 0 0 108px;
-      filter: drop-shadow(0 4px 4px rgba(11,42,74,0.22));
-    }
-    .f16 .contrail {
-      height: 3px;
-      width: 72px;
-      border-radius: 2px;
-      margin-right: 2px;
-      flex: 0 0 72px;
-      opacity: 0.9;
-    }
-    .f2 svg { width: 92px; height: 32px; flex-basis: 92px; }
-    .f3 svg { width: 84px; height: 30px; flex-basis: 84px; }
-    .f1 .contrail { background: linear-gradient(90deg, transparent, #0a3a7a); }
-    .f2 .contrail { background: linear-gradient(90deg, transparent, #fff); }
-    .f3 .contrail { background: linear-gradient(90deg, transparent, #0a3a7a); }
-    .plane {
-      position: absolute;
-      left: 0;
-      top: 118px;
-      width: 160px;
-      height: 48px;
-      will-change: transform;
-      animation: fly 1.5s linear 1 forwards;
-    }
-    .plane svg {
-      width: 160px;
-      height: 48px;
-      display: block;
-      overflow: visible;
-      filter: drop-shadow(0 5px 6px rgba(11,42,74,0.25));
-    }
-    .plane .trail {
-      position: absolute;
-      right: 152px;
-      top: 23px;
-      height: 2px;
-      width: 110px;
-      border-radius: 2px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9));
-    }
-    @keyframes fly {
-      from { transform: translate3d(-220px, 0, 0); }
-      to { transform: translate3d(calc(100vw + 220px), 0, 0); }
-    }
-    .wrap {
-      position: relative;
-      z-index: 2;
-      height: 100dvh;
-      overflow-y: auto;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior: contain;
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 28px 18px 80px;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 12px;
-      border-bottom: 1px solid rgba(11,42,74,0.14);
-      padding-bottom: 14px;
-      margin-bottom: 28px;
-      font-size: 13px;
-      letter-spacing: 0.08em;
-    }
-    .brand { color: var(--acc); text-transform: uppercase; font-weight: 600; }
-    .live { color: var(--acc); }
-    .live::before {
-      content: "";
-      display: inline-block;
-      width: 7px; height: 7px;
-      background: var(--acc);
-      border-radius: 50%;
-      margin-right: 8px;
-      box-shadow: 0 0 10px var(--acc2);
-    }
-    h1 {
-      font-family: "Newsreader", Georgia, serif;
-      font-size: clamp(56px, 17vw, 96px);
-      font-weight: 400;
-      line-height: 0.88;
-      letter-spacing: -0.03em;
-      margin: 0 0 14px;
-    }
-    h1 em { font-style: italic; color: var(--acc); }
-    .lede {
-      max-width: 36rem;
-      color: var(--dim);
-      margin: 0 0 22px;
-    }
-    .rule {
-      display: inline-block;
-      border: 1px solid rgba(255,255,255,0.55);
-      background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.22));
-      color: var(--acc);
-      padding: 10px 14px;
-      margin-bottom: 32px;
-      border-radius: 999px;
-      font-family: "Newsreader", Georgia, serif;
-      font-style: italic;
-      font-size: 18px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    a.card { text-decoration: none; color: inherit; }
-    article {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(165deg, rgba(255,255,255,0.72) 0%, rgba(232,244,255,0.82) 48%, rgba(255,255,255,0.7) 100%);
-      border: 1px solid rgba(255,255,255,0.62);
-      border-radius: 22px;
-      padding: 18px 18px 16px;
-      min-height: 156px;
-      display: flex;
-      flex-direction: column;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.85),
-        inset 0 -1px 0 rgba(11,42,74,0.06),
-        0 12px 28px rgba(11,42,74,0.10);
-    }
-    article::before {
-      content: "";
-      position: absolute;
-      top: -40%;
-      left: -20%;
-      width: 80%;
-      height: 70%;
-      background: linear-gradient(120deg, rgba(255,255,255,0.55), rgba(255,255,255,0));
-      transform: rotate(-12deg);
-      pointer-events: none;
-    }
-    article > * { position: relative; z-index: 1; }
-    @media (hover: hover) {
-      article { transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease; }
-      a.card:hover article {
-        border-color: rgba(255,255,255,0.9);
-        transform: translateY(-2px);
-        box-shadow:
-          inset 0 1px 0 rgba(255,255,255,0.95),
-          0 16px 32px rgba(11,42,74,0.14);
-      }
-    }
-    .idx {
-      color: var(--acc);
-      font-size: 12px;
-      letter-spacing: 0.14em;
-      font-weight: 600;
-    }
-    article h2 {
-      font-family: "Newsreader", Georgia, serif;
-      font-size: 30px;
-      font-weight: 500;
-      margin: 10px 0 8px;
-      letter-spacing: -0.02em;
-    }
-    article p { margin: 0; color: var(--dim); flex: 1; }
-    article .go {
-      margin-top: 16px;
-      color: var(--fg);
-      font-size: 13px;
-      font-weight: 600;
-    }
-    .stack {
-      margin-top: 28px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .stack span {
-      border: 1px solid rgba(255,255,255,0.55);
-      background: linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0.2));
-      padding: 7px 12px;
-      color: var(--dim);
-      font-size: 13px;
-      border-radius: 999px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
-    }
-    footer {
-      margin-top: 40px;
-      color: var(--dim);
-      font-size: 14px;
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    footer a { color: var(--dim); }
-    footer a:hover { color: var(--acc); }
-    @media (max-width: 640px) {
-      .grid { grid-template-columns: 1fr; }
-      header { margin-bottom: 22px; }
-      article { min-height: 0; }
-      .plane { top: 102px; }
-      .f16 svg { width: 78px; height: 28px; flex-basis: 78px; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .cloud, .plane { animation: none; }
-      .plane { left: 42%; }
-      .flock { display: none; }
-    }
+    html, body { margin:0; height:100%; overflow:hidden; }
+    body { color:var(--fg); font-family:"Source Sans 3",ui-sans-serif,system-ui,sans-serif; font-size:17px; line-height:1.55; background:linear-gradient(180deg,var(--bg0) 0%,var(--bg1) 42%,var(--bg2) 100%); }
+    .sky,.hud { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+    .sky { z-index:0; } .hud { z-index:8; }
+    .cloud { position:absolute; background:#fff; border-radius:999px; opacity:.88; animation:drift linear infinite; }
+    .cloud::before,.cloud::after { content:""; position:absolute; background:#fff; border-radius:50%; }
+    .c1 { width:120px; height:36px; top:8%; animation-duration:48s; }
+    .c1::before { width:52px; height:52px; left:18px; top:-28px; } .c1::after { width:70px; height:70px; left:48px; top:-38px; }
+    .c2 { width:160px; height:42px; top:18%; animation-duration:64s; animation-delay:-20s; opacity:.75; }
+    .c2::before { width:64px; height:64px; left:22px; top:-32px; } .c2::after { width:86px; height:86px; left:60px; top:-46px; }
+    .c3 { width:90px; height:28px; top:32%; animation-duration:40s; animation-delay:-8s; opacity:.7; }
+    .c3::before { width:40px; height:40px; left:12px; top:-20px; } .c3::after { width:54px; height:54px; left:36px; top:-28px; }
+    .c4 { width:200px; height:48px; top:6%; animation-duration:72s; animation-delay:-40s; opacity:.55; }
+    .c4::before { width:80px; height:80px; left:30px; top:-40px; } .c4::after { width:110px; height:110px; left:78px; top:-58px; }
+    .c5 { width:110px; height:32px; top:44%; animation-duration:54s; animation-delay:-12s; opacity:.5; }
+    .c5::before { width:46px; height:46px; left:16px; top:-24px; } .c5::after { width:62px; height:62px; left:44px; top:-32px; }
+    @keyframes drift { from { transform:translate3d(-30vw,0,0);} to { transform:translate3d(110vw,0,0);} }
+    .flock { position:absolute; inset:0; overflow:hidden; opacity:1; transition:opacity .2s linear; }
+    .flock.is-away { opacity:0; }
+    .f16 { position:absolute; top:0; left:0; display:flex; align-items:center; width:188px; height:40px; transform-origin:72% 50%; will-change:transform; }
+    .f16 svg { width:108px; height:38px; display:block; flex:0 0 108px; filter:drop-shadow(0 4px 4px rgba(11,42,74,.22)); }
+    .f16 .contrail { height:3px; width:72px; border-radius:2px; margin-right:2px; flex:0 0 72px; opacity:.9; }
+    .f2 svg { width:92px; height:32px; flex-basis:92px; }
+    .f3 svg { width:84px; height:30px; flex-basis:84px; }
+    .f1 .contrail { background:linear-gradient(90deg,transparent,#0a3a7a); }
+    .f2 .contrail { background:linear-gradient(90deg,transparent,#fff); }
+    .f3 .contrail { background:linear-gradient(90deg,transparent,#0a3a7a); }
+    .plane { position:absolute; left:0; top:118px; width:160px; height:48px; animation:fly 1.5s linear 1 forwards; }
+    .plane svg { width:160px; height:48px; display:block; overflow:visible; filter:drop-shadow(0 5px 6px rgba(11,42,74,.25)); }
+    .plane .trail { position:absolute; right:152px; top:23px; height:2px; width:110px; border-radius:2px; background:linear-gradient(90deg,transparent,rgba(255,255,255,.9)); }
+    @keyframes fly { from { transform:translate3d(-220px,0,0);} to { transform:translate3d(calc(100vw + 220px),0,0);} }
+    .wrap { position:relative; z-index:2; height:100dvh; overflow-y:auto; overflow-x:hidden; max-width:860px; margin:0 auto; padding:28px 18px 80px; }
+    header { display:flex; justify-content:space-between; align-items:baseline; gap:12px; border-bottom:1px solid rgba(11,42,74,.14); padding-bottom:14px; margin-bottom:28px; font-size:13px; letter-spacing:.08em; }
+    .brand,.live { color:var(--acc); } .brand { text-transform:uppercase; font-weight:600; }
+    .live::before { content:""; display:inline-block; width:7px; height:7px; background:var(--acc); border-radius:50%; margin-right:8px; box-shadow:0 0 10px var(--acc2); }
+    h1 { font-family:"Newsreader",Georgia,serif; font-size:clamp(56px,17vw,96px); font-weight:400; line-height:.88; letter-spacing:-.03em; margin:0 0 14px; }
+    h1 em { font-style:italic; color:var(--acc); }
+    .lede { max-width:36rem; color:var(--dim); margin:0 0 22px; }
+    .rule { display:inline-block; border:1px solid rgba(255,255,255,.55); background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,.22)); color:var(--acc); padding:10px 14px; margin-bottom:32px; border-radius:999px; font-family:"Newsreader",Georgia,serif; font-style:italic; font-size:18px; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    a.card { text-decoration:none; color:inherit; }
+    article { position:relative; overflow:hidden; background:linear-gradient(165deg,rgba(255,255,255,.72),rgba(232,244,255,.82) 48%,rgba(255,255,255,.7)); border:1px solid rgba(255,255,255,.62); border-radius:22px; padding:18px; min-height:156px; display:flex; flex-direction:column; box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 12px 28px rgba(11,42,74,.1); }
+    article::before { content:""; position:absolute; top:-40%; left:-20%; width:80%; height:70%; background:linear-gradient(120deg,rgba(255,255,255,.55),transparent); transform:rotate(-12deg); pointer-events:none; }
+    article > * { position:relative; z-index:1; }
+    .idx { color:var(--acc); font-size:12px; letter-spacing:.14em; font-weight:600; }
+    article h2 { font-family:"Newsreader",Georgia,serif; font-size:30px; font-weight:500; margin:10px 0 8px; }
+    article p { margin:0; color:var(--dim); flex:1; }
+    article .go { margin-top:16px; color:var(--fg); font-size:13px; font-weight:600; }
+    .stack { margin-top:28px; display:flex; flex-wrap:wrap; gap:8px; }
+    .stack span { border:1px solid rgba(255,255,255,.55); background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,.2)); padding:7px 12px; color:var(--dim); font-size:13px; border-radius:999px; }
+    footer { margin-top:40px; color:var(--dim); font-size:14px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    footer a { color:var(--dim); }
+    @media (max-width:640px) { .grid { grid-template-columns:1fr; } article { min-height:0; } .plane { top:102px; } }
+    @media (prefers-reduced-motion:reduce) { .cloud,.plane { animation:none; } .flock { display:none; } }
   </style>
 </head>
 <body>
   <div class="sky" aria-hidden="true">
-    <div class="cloud c1"></div>
-    <div class="cloud c2"></div>
-    <div class="cloud c3"></div>
-    <div class="cloud c4"></div>
-    <div class="cloud c5"></div>
+    <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div><div class="cloud c4"></div><div class="cloud c5"></div>
   </div>
-
   <div class="hud" aria-hidden="true">
     <div class="flock" id="flock">
-      <div class="f16 f1" id="jet1">
-        <span class="contrail"></span>
-        <svg viewBox="0 0 80 28" xmlns="http://www.w3.org/2000/svg">
-          <polygon fill="#6d7784" points="22,16 8,26 28,16"/>
-          <polygon fill="#4d5660" points="16,14 10,4 22,14"/>
-          <polygon fill="#8b95a1" points="78,14 52,12 36,11 28,8 18,12 6,13 2,14 6,16 18,16 28,20 36,17 52,16"/>
-          <polygon fill="#6ec4e0" points="50,12 42,8 34,12"/>
-          <rect x="2" y="13" width="6" height="3" fill="#ff9a4a"/>
-        </svg>
-      </div>
-      <div class="f16 f2" id="jet2">
-        <span class="contrail"></span>
-        <svg viewBox="0 0 80 28" xmlns="http://www.w3.org/2000/svg">
-          <polygon fill="#6d7784" points="22,16 8,26 28,16"/>
-          <polygon fill="#4d5660" points="16,14 10,4 22,14"/>
-          <polygon fill="#8b95a1" points="78,14 52,12 36,11 28,8 18,12 6,13 2,14 6,16 18,16 28,20 36,17 52,16"/>
-          <polygon fill="#6ec4e0" points="50,12 42,8 34,12"/>
-          <rect x="2" y="13" width="6" height="3" fill="#ff9a4a"/>
-        </svg>
-      </div>
-      <div class="f16 f3" id="jet3">
-        <span class="contrail"></span>
-        <svg viewBox="0 0 80 28" xmlns="http://www.w3.org/2000/svg">
-          <polygon fill="#6d7784" points="22,16 8,26 28,16"/>
-          <polygon fill="#4d5660" points="16,14 10,4 22,14"/>
-          <polygon fill="#8b95a1" points="78,14 52,12 36,11 28,8 18,12 6,13 2,14 6,16 18,16 28,20 36,17 52,16"/>
-          <polygon fill="#6ec4e0" points="50,12 42,8 34,12"/>
-          <rect x="2" y="13" width="6" height="3" fill="#ff9a4a"/>
-        </svg>
-      </div>
+      <div class="f16 f1" id="jet1"><span class="contrail"></span><svg viewBox="0 0 80 28"><polygon fill="#6d7784" points="22,16 8,26 28,16"/><polygon fill="#4d5660" points="16,14 10,4 22,14"/><polygon fill="#8b95a1" points="78,14 52,12 36,11 28,8 18,12 6,13 2,14 6,16 18,16 28,20 36,17 52,16"/><polygon fill="#6ec4e0" points="50,12 42,8 34,12"/><rect x="2" y="13" width="6" height="3" fill="#ff9a4a"/></svg></div>
+      <div class="f16 f2" id="jet2"><span class="contrail"></span><svg viewBox="0 0 80 28"><polygon fill="#6d7784" points="22,16 8,26 28,16"/><polygon fill="#4d5660" points="16,14 10,4 22,14"/><polygon fill="#8b95a1" points="78,14 52,12 36,11 28,8 18,12 6,13 2,14 6,16 18,16 28,20 36,17 52,16"/><polygon fill="#6ec4e0" points="50,12 42,8 34,12"/><rect x="2" y="13" width="6" height="3" fill="#ff9a4a"/></svg></div>
+      <div class="f16 f3" id="jet3"><span class="contrail"></span><svg viewBox="0 0 80 28"><polygon fill="#6d7784" points="22,16 8,26 28,16"/><polygon fill="#4d5660" points="16,14 10,4 22,14"/><polygon fill="#8b95a1" points="78,14 52,12 36,11 28,8 18,12 6,13 2,14 6,16 18,16 28,20 36,17 52,16"/><polygon fill="#6ec4e0" points="50,12 42,8 34,12"/><rect x="2" y="13" width="6" height="3" fill="#ff9a4a"/></svg></div>
     </div>
-    <div class="plane">
-      <span class="trail"></span>
-      <svg viewBox="0 0 220 64" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#9aa3ae"/>
-            <stop offset="0.55" stop-color="#6f7884"/>
-            <stop offset="1" stop-color="#d0d6dc"/>
-          </linearGradient>
-        </defs>
-        <polygon fill="#7b8490" points="118,34 62,58 96,34"/>
-        <polygon fill="#5c6570" points="48,32 28,8 58,32"/>
-        <polygon fill="url(#body)" points="216,32 168,28 128,27 112,22 96,28 48,30 18,29 6,27 2,32 6,37 18,35 48,34 96,36 112,42 128,37 168,36"/>
-        <polygon fill="#7ec8e0" points="158,28 140,23 126,28 140,30"/>
-        <rect x="4" y="29.5" width="10" height="5" rx="0.8" fill="#3a424c"/>
-        <rect x="4.5" y="30.4" width="4" height="3.2" fill="#ffb36a"/>
-      </svg>
-    </div>
+    <div class="plane"><span class="trail"></span><svg viewBox="0 0 220 64"><defs><linearGradient id="body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9aa3ae"/><stop offset=".55" stop-color="#6f7884"/><stop offset="1" stop-color="#d0d6dc"/></linearGradient></defs><polygon fill="#7b8490" points="118,34 62,58 96,34"/><polygon fill="#5c6570" points="48,32 28,8 58,32"/><polygon fill="url(#body)" points="216,32 168,28 128,27 112,22 96,28 48,30 18,29 6,27 2,32 6,37 18,35 48,34 96,36 112,42 128,37 168,36"/><polygon fill="#7ec8e0" points="158,28 140,23 126,28 140,30"/><rect x="4" y="29.5" width="10" height="5" rx=".8" fill="#3a424c"/><rect x="4.5" y="30.4" width="4" height="3.2" fill="#ffb36a"/></svg></div>
   </div>
-
   <div class="wrap" id="page">
-    <header>
-      <div class="brand">local layer / 570</div>
-      <div class="live">eval first</div>
-    </header>
-
+    <header><div class="brand">local layer / 570</div><div class="live">eval first</div></header>
     <h1>Jon<em>ard</em></h1>
     <p class="lede">Local-first AI tools. Consumer GPU. No cloud required to chat. I build the product around the model — routing, tools, memory, receipts, traces. The model is swappable. The layer is not.</p>
     <div class="rule">If I cannot eval it, I do not train it.</div>
-
     <div class="grid">
-      <a class="card" href="https://github.com/Jonardi123/nebula">
-        <article>
-          <div class="idx">01</div>
-          <h2>Nebula</h2>
-          <p>Operating layer on LM Studio. Windows + iPhone. The model is just a backend.</p>
-          <div class="go">Open repo →</div>
-        </article>
-      </a>
-      <a class="card" href="https://github.com/Jonardi123/failtrace">
-        <article>
-          <div class="idx">02</div>
-          <h2>failtrace</h2>
-          <p>Failure → diagnosis → different call. Generator, harness, SFT pack.</p>
-          <div class="go">Open repo →</div>
-        </article>
-      </a>
-      <a class="card" href="https://github.com/Jonardi123/local-chat-studio">
-        <article>
-          <div class="idx">03</div>
-          <h2>Studio</h2>
-          <p>Chat client for anything that speaks OpenAI-local. Private box, not a tab.</p>
-          <div class="go">Open repo →</div>
-        </article>
-      </a>
-      <a class="card" href="https://github.com/Jonardi123/RIFF">
-        <article>
-          <div class="idx">04</div>
-          <h2>RIFF</h2>
-          <p>YouTube → MP3 on loopback only. Stays on the machine.</p>
-          <div class="go">Open repo →</div>
-        </article>
-      </a>
+      <a class="card" href="https://github.com/Jonardi123/nebula"><article><div class="idx">01</div><h2>Nebula</h2><p>Operating layer on LM Studio. Windows + iPhone. The model is just a backend.</p><div class="go">Open repo →</div></article></a>
+      <a class="card" href="https://github.com/Jonardi123/failtrace"><article><div class="idx">02</div><h2>failtrace</h2><p>Failure → diagnosis → different call. Generator, harness, SFT pack.</p><div class="go">Open repo →</div></article></a>
+      <a class="card" href="https://github.com/Jonardi123/local-chat-studio"><article><div class="idx">03</div><h2>Studio</h2><p>Chat client for anything that speaks OpenAI-local. Private box, not a tab.</p><div class="go">Open repo →</div></article></a>
+      <a class="card" href="https://github.com/Jonardi123/RIFF"><article><div class="idx">04</div><h2>RIFF</h2><p>YouTube → MP3 on loopback only. Stays on the machine.</p><div class="go">Open repo →</div></article></a>
     </div>
-
-    <div class="stack">
-      <span>Python</span><span>TypeScript</span><span>Tauri</span><span>React</span>
-      <span>LM Studio</span><span>QLoRA</span><span>GGUF</span><span>RX 570</span>
-    </div>
-
-    <footer>
-      <span>Albania · built on the 570</span>
-      <a href="https://github.com/Jonardi123">github.com/Jonardi123</a>
-    </footer>
+    <div class="stack"><span>Python</span><span>TypeScript</span><span>Tauri</span><span>React</span><span>LM Studio</span><span>QLoRA</span><span>GGUF</span><span>RX 570</span></div>
+    <footer><span>Albania · built on the 570</span><a href="https://github.com/Jonardi123">github.com/Jonardi123</a></footer>
   </div>
   <script>
     (function () {
       var page = document.getElementById("page");
       var flock = document.getElementById("flock");
       var jets = [
-        { el: document.getElementById("jet1"), dur: 9000, shift: 0, kind: "loop" },
-        { el: document.getElementById("jet2"), dur: 10500, shift: 0.38, kind: "back" },
-        { el: document.getElementById("jet3"), dur: 8200, shift: 0.62, kind: "wave" }
+        { el: document.getElementById("jet1"), dur: 11000, shift: 0,    y0: 58, amp: 52 },
+        { el: document.getElementById("jet2"), dur: 12500, shift: 0.18, y0: 92, amp: 40 },
+        { el: document.getElementById("jet3"), dur: 11800, shift: 0.33, y0: 74, amp: 46 }
       ];
       if (!page || !flock || !jets[0].el) return;
-
-      function sync() {
+      page.addEventListener("scroll", function () {
         flock.classList.toggle("is-away", page.scrollTop > 40);
-      }
-      page.addEventListener("scroll", sync, { passive: true });
-      sync();
-
-      function pos(kind, t, w) {
-        var x, y;
-        if (kind === "loop") {
-          if (t < 0.26) {
-            var u = t / 0.26;
-            x = -180 + u * (w * 0.42 + 180);
-            y = 96;
-          } else if (t < 0.62) {
-            var u = (t - 0.26) / 0.36;
-            var a = Math.PI + u * Math.PI * 2;
-            var cx = w * 0.42, cy = 96, r = 78;
-            x = cx + Math.cos(a) * r;
-            y = cy + Math.sin(a) * r;
-          } else {
-            var u = (t - 0.62) / 0.38;
-            x = w * 0.42 + u * (w + 220 - w * 0.42);
-            y = 96;
-          }
-        } else if (kind === "back") {
-          if (t < 0.28) {
-            var u = t / 0.28;
-            x = w + 180 - u * (w * 0.38 + 180);
-            y = 128;
-          } else if (t < 0.64) {
-            var u = (t - 0.28) / 0.36;
-            var a = u * Math.PI * 2;
-            var cx = w * 0.62, cy = 128, r = 70;
-            x = cx - Math.cos(a) * r;
-            y = cy + Math.sin(a) * r;
-          } else {
-            var u = (t - 0.64) / 0.36;
-            x = w * 0.62 - u * (w * 0.62 + 220);
-            y = 128;
-          }
-        } else {
-          var u = t;
-          x = -180 + u * (w + 360);
-          y = 150 - Math.sin(u * Math.PI * 2) * 88;
-        }
-        return { x: x, y: y };
-      }
-
-      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (reduce) return;
-
+      }, { passive: true });
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       function tick(now) {
         var w = window.innerWidth;
         for (var i = 0; i < jets.length; i++) {
           var j = jets[i];
           var t = ((now / j.dur) + j.shift) % 1;
-          var a = pos(j.kind, t, w);
-          var b = pos(j.kind, (t + 0.012) % 1, w);
-          var ang = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
-          j.el.style.transform =
-            "translate3d(" + a.x + "px," + a.y + "px,0) rotate(" + ang + "deg)";
+          var x = -200 + t * (w + 400);
+          var y = j.y0 + Math.sin(t * Math.PI * 2) * j.amp;
+          var pitch = Math.cos(t * Math.PI * 2) * 18;
+          j.el.style.transform = "translate3d(" + x + "px," + y + "px,0) rotate(" + pitch + "deg)";
         }
         requestAnimationFrame(tick);
       }
