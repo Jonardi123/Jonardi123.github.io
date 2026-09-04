@@ -118,12 +118,12 @@
       z-index: 1;
       top: 51%;
       right: 86%;
-      width: clamp(360px, 64vw, 960px);
-      height: 11px;
+      width: clamp(560px, 92vw, 1380px);
+      height: 18px;
       border-radius: 999px;
       background: linear-gradient(90deg, rgba(var(--smoke), 0), rgba(var(--smoke), 0.4) 38%, rgba(var(--smoke), 0.82));
-      box-shadow: 0 0 18px rgba(var(--smoke), 0.22);
-      filter: blur(2.5px);
+      box-shadow: 0 0 28px rgba(var(--smoke), 0.3);
+      filter: blur(4px);
       transform: translateY(-50%) scaleX(0.05);
       transform-origin: right center;
       opacity: 0;
@@ -132,7 +132,7 @@
     .contrail::after {
       content: "";
       position: absolute;
-      inset: 4px 0;
+      inset: 6px 0;
       border-radius: inherit;
       background: linear-gradient(90deg, rgba(var(--smoke), 0), rgba(var(--smoke), 0.34) 42%, rgba(var(--smoke), 0.95));
     }
