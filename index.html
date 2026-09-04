@@ -29,7 +29,8 @@
     body { color:var(--fg); font-family:"Source Sans 3",ui-sans-serif,system-ui,sans-serif; font-size:17px; line-height:1.55; background:linear-gradient(180deg,var(--bg0),var(--bg1) 42%,var(--bg2)); transition:background .35s ease,color .25s ease,filter .18s ease; }
     .sky { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0; }
     .hud { position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:3; }
-    .sky-top { position:absolute; inset:0; z-index:2; pointer-events:none; will-change:transform; }
+    .sky-top { position:absolute; inset:0; z-index:1; pointer-events:none; will-change:transform; }
+    .cloud-band { position:absolute; inset:0; z-index:2; pointer-events:none; }
     .stars { position:absolute; inset:0; z-index:0; opacity:0; transition:opacity .4s ease; background-image:radial-gradient(1px 1px at 12% 18%,#fff,transparent),radial-gradient(1.5px 1.5px at 28% 36%,#d7e8ff,transparent),radial-gradient(1px 1px at 63% 14%,#fff,transparent),radial-gradient(2px 2px at 81% 44%,#fff,transparent),radial-gradient(1px 1px at 47% 72%,#cfe0ff,transparent); }
     html[data-theme="dark"] .stars { opacity:1; } html.raining .stars { opacity:.32; }
 
@@ -100,11 +101,11 @@
     html.gust .cloud { filter:brightness(.97) blur(var(--gust-blur,0px)); }
     .cloud.far { --gust-blur:3.3px; }
     .cloud.near { --gust-blur:.7px; }
-    .c1 { --cw:190px;--ch:54px;--ct:9%;--base-dur:48s;animation-delay:0s; }
-    .c2 { --cw:260px;--ch:66px;--ct:16%;--base-dur:64s;animation-delay:-20s; }
-    .c3 { --cw:150px;--ch:46px;--ct:31%;--base-dur:40s;animation-delay:-8s; }
-    .c4 { --cw:320px;--ch:76px;--ct:5%;--base-dur:72s;animation-delay:-40s; }
-    .c5 { --cw:210px;--ch:58px;--ct:42%;--base-dur:54s;animation-delay:-12s; }
+    .c1 { --cw:190px;--ch:54px;--ct:3%;--base-dur:48s;animation-delay:0s; }
+    .c2 { --cw:260px;--ch:66px;--ct:7%;--base-dur:64s;animation-delay:-20s; }
+    .c3 { --cw:150px;--ch:46px;--ct:12%;--base-dur:40s;animation-delay:-8s; }
+    .c4 { --cw:320px;--ch:76px;--ct:1%;--base-dur:72s;animation-delay:-40s; }
+    .c5 { --cw:210px;--ch:58px;--ct:16%;--base-dur:54s;animation-delay:-12s; }
     @keyframes drift {
       from { transform:translate3d(calc(-1 * var(--cw) - 10vw),0,0) scale(var(--cloud-scale)); }
       to { transform:translate3d(calc(100vw + var(--cw) + 10vw),0,0) scale(var(--cloud-scale)); }
@@ -164,8 +165,8 @@
 <body>
   <div class="sky" aria-hidden="true">
     <div class="stars"></div>
-    <div class="sky-top" id="skyTop">
-      <div class="moon" id="moon"></div>
+    <div class="sky-top" id="skyTop"><div class="moon" id="moon"></div></div>
+    <div class="cloud-band" id="cloudBand">
       <div class="cloud c1 near"><i class="puff"></i><i class="bolt"></i></div><div class="cloud c2 far"><i class="puff"></i><i class="bolt"></i></div><div class="cloud c3 near"><i class="puff"></i><i class="bolt"></i></div><div class="cloud c4 far"><i class="puff"></i><i class="bolt"></i></div><div class="cloud c5 near"><i class="puff"></i><i class="bolt"></i></div>
     </div>
     <div class="loom l1"></div><div class="loom l2"></div><div class="loom l3"></div>
