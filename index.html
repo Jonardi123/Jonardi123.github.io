@@ -51,6 +51,9 @@
     @keyframes rain-in { to { opacity:1; } }
     .drop { position:absolute; top:-24px; width:1.5px; height:16px; background:linear-gradient(180deg,rgba(190,220,255,.85),transparent); animation:fall linear infinite; }
     @keyframes fall { to { transform:translateY(110vh); } }
+    .lightning { position:absolute; inset:0; z-index:5; opacity:0; pointer-events:none; background:radial-gradient(circle at var(--flash-x,72%) var(--flash-y,18%),rgba(235,246,255,.95) 0,rgba(165,205,255,.38) 22%,rgba(95,155,225,.12) 48%,transparent 72%); mix-blend-mode:screen; }
+    html.thunder .lightning { animation:lightning-flash .62s ease-out both; }
+    @keyframes lightning-flash { 0%,100%{opacity:0;} 4%{opacity:.92;} 11%{opacity:.12;} 18%{opacity:.68;} 29%{opacity:.06;} 42%{opacity:.24;} 62%{opacity:0;} }
     .ch { position:relative; display:inline-block; }
     .ch.ital { font-style:italic; color:var(--acc); }
     .splash {
@@ -112,7 +115,7 @@
     footer { margin-top:40px; color:var(--dim); font-size:14px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
     footer a { color:var(--dim); }
     @media (max-width:640px) { .grid { grid-template-columns:1fr; } article { min-height:0; } }
-    @media (prefers-reduced-motion:reduce) { .cloud,.loom,.rain,.drop,.splash { animation:none; } .airshow { display:none; } }
+    @media (prefers-reduced-motion:reduce) { .cloud,.loom,.rain,.drop,.splash,.lightning { animation:none; } .airshow { display:none; } }
   </style>
 </head>
 <body>
@@ -121,6 +124,7 @@
     <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div><div class="cloud c4"></div><div class="cloud c5"></div>
     <div class="loom l1"></div><div class="loom l2"></div><div class="loom l3"></div>
     <div class="rain" id="rain"></div>
+    <div class="lightning" id="lightning"></div>
   </div>
   <div class="hud" aria-hidden="true">
     <div class="airshow">
@@ -157,6 +161,7 @@
       var btn = document.getElementById("theme");
       var meta = document.querySelector('meta[name="theme-color"]');
       var rain = document.getElementById("rain");
+      var lightning = document.getElementById("lightning");
       var lede = document.getElementById("lede");
       var text = "Local-first AI tools. Consumer GPU. No cloud required to chat. I build the product around the model — routing, tools, memory, receipts, traces. The model is swappable. The layer is not.";
       lede.innerHTML = text.split("").map(function (c) {
@@ -186,10 +191,70 @@
         setTimeout(function () { if (s.parentNode) s.parentNode.removeChild(s); }, 440);
         hitTimer = setTimeout(hit, 260 + Math.random() * 420);
       }
+
+      var thunderTimer = null;
+      var audioCtx = null;
+      function primeAudio() {
+        try {
+          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          if (audioCtx.state === "suspended") audioCtx.resume();
+        } catch (e) {}
+      }
+      function rumble() {
+        if (!audioCtx || audioCtx.state !== "running") return;
+        var duration = 2.8;
+        var rate = audioCtx.sampleRate;
+        var buffer = audioCtx.createBuffer(1, Math.floor(rate * duration), rate);
+        var data = buffer.getChannelData(0);
+        var last = 0;
+        for (var i = 0; i < data.length; i++) {
+          var white = Math.random() * 2 - 1;
+          last = last * .985 + white * .015;
+          var t = i / rate;
+          var envelope = Math.min(1, t * 8) * Math.exp(-t * 1.35);
+          data[i] = last * envelope * 2.4;
+        }
+        var source = audioCtx.createBufferSource();
+        var filter = audioCtx.createBiquadFilter();
+        var gain = audioCtx.createGain();
+        source.buffer = buffer;
+        filter.type = "lowpass";
+        filter.frequency.value = 145;
+        filter.Q.value = .7;
+        gain.gain.setValueAtTime(.0001, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(.34, audioCtx.currentTime + .08);
+        gain.gain.exponentialRampToValueAtTime(.0001, audioCtx.currentTime + duration);
+        source.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+        source.start();
+      }
+      function scheduleThunder() {
+        if (thunderTimer) clearTimeout(thunderTimer);
+        if (!root.classList.contains("raining")) return;
+        thunderTimer = setTimeout(thunder, 7000 + Math.random() * 13000);
+      }
+      function thunder() {
+        if (!root.classList.contains("raining")) return;
+        if (lightning) {
+          lightning.style.setProperty("--flash-x", (18 + Math.random() * 70) + "%");
+          lightning.style.setProperty("--flash-y", (8 + Math.random() * 30) + "%");
+        }
+        root.classList.remove("thunder");
+        void root.offsetWidth;
+        root.classList.add("thunder");
+        setTimeout(function () { root.classList.remove("thunder"); }, 700);
+        setTimeout(rumble, 520 + Math.random() * 950);
+        scheduleThunder();
+      }
+      function stopThunder() {
+        root.classList.remove("thunder");
+        if (thunderTimer) { clearTimeout(thunderTimer); thunderTimer = null; }
+      }
+
       var rainTimer = null;
       function apply(mode) {
         root.classList.remove("raining");
         stopHits();
+        stopThunder();
         if (rainTimer) { clearTimeout(rainTimer); rainTimer = null; }
         root.setAttribute("data-theme", mode);
         try { localStorage.setItem("theme", mode); } catch (e) {}
@@ -201,6 +266,7 @@
           rainTimer = setTimeout(function () {
             root.classList.add("raining");
             hit();
+            scheduleThunder();
           }, 3000);
         }
       }
@@ -208,8 +274,11 @@
       try { saved = localStorage.getItem("theme"); } catch (e) {}
       apply(saved === "dark" ? "dark" : "light");
       if (btn) btn.addEventListener("click", function () {
+        primeAudio();
         apply(root.getAttribute("data-theme") === "dark" ? "light" : "dark");
       });
+      document.addEventListener("pointerdown", primeAudio, { once:true });
+      document.addEventListener("keydown", primeAudio, { once:true });
     })();
   </script>
 </body>
