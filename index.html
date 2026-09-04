@@ -7,7 +7,7 @@
   <title>Jonard — local layer</title>
   <meta name="description" content="Local-first AI tools. Consumer GPU." />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Source+Sans+3:wght@400;500;600&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&amp;family=Source+Sans+3:wght@400;500;600&amp;display=swap" />
   <style>
     :root {
       --bg0: #7ec8ff;
@@ -34,7 +34,7 @@
       overflow: hidden;
     }
     .sky { z-index: 0; }
-    .hud { z-index: 8; }
+    .hud { z-index: 3; }
     .cloud {
       position: absolute;
       background: #fff;
@@ -67,33 +67,96 @@
       from { transform: translate3d(-30vw, 0, 0); }
       to { transform: translate3d(110vw, 0, 0); }
     }
-    .plane {
+    .airshow {
       position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .flight {
+      --size: clamp(190px, 21vw, 300px);
+      --duration: 0.9s;
+      --trail-start: 0.12s;
+      --delay: 0.02s;
+      --smoke: 11, 107, 255;
+      position: absolute;
+      top: var(--lane);
       left: 0;
-      top: 118px;
-      width: 160px;
-      height: 48px;
-      animation: fly 1.5s linear 1 forwards;
+      width: var(--size);
+      opacity: 0;
+      will-change: transform, opacity;
+      animation: fly-across var(--duration) linear var(--delay) 1 both;
     }
-    .plane svg {
-      width: 160px;
-      height: 48px;
-      display: block;
-      overflow: visible;
-      filter: drop-shadow(0 5px 6px rgba(11,42,74,0.25));
+    .flight-top { --lane: 8%; --delay: 0.02s; }
+    .flight-middle { --lane: 38%; --delay: 0.06s; --smoke: 255, 255, 255; }
+    .flight-bottom { --lane: 68%; --delay: 0.1s; }
+    .jet-views {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      aspect-ratio: 1000 / 562;
+      filter: drop-shadow(0 12px 10px rgba(11, 42, 74, 0.22));
     }
-    .plane .trail {
+    .jet-sprite {
       position: absolute;
-      right: 152px;
-      top: 23px;
-      height: 2px;
-      width: 110px;
-      border-radius: 2px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9));
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transform-origin: 52% 52%;
+      backface-visibility: hidden;
+      will-change: transform, opacity;
     }
-    @keyframes fly {
-      from { transform: translate3d(-220px, 0, 0); }
-      to { transform: translate3d(calc(100vw + 220px), 0, 0); }
+    .jet-top-view {
+      animation: top-view-roll var(--duration) ease-in-out var(--delay) 1 both;
+    }
+    .jet-side-view {
+      animation: side-view-reveal var(--duration) ease-in-out var(--delay) 1 both;
+    }
+    .contrail {
+      position: absolute;
+      z-index: 1;
+      top: 51%;
+      right: 86%;
+      width: clamp(360px, 64vw, 960px);
+      height: 11px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(var(--smoke), 0), rgba(var(--smoke), 0.4) 38%, rgba(var(--smoke), 0.82));
+      box-shadow: 0 0 18px rgba(var(--smoke), 0.22);
+      filter: blur(2.5px);
+      transform: translateY(-50%) scaleX(0.05);
+      transform-origin: right center;
+      opacity: 0;
+      animation: trail-life calc(var(--duration) - var(--trail-start)) linear calc(var(--delay) + var(--trail-start)) 1 both;
+    }
+    .contrail::after {
+      content: "";
+      position: absolute;
+      inset: 4px 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(var(--smoke), 0), rgba(var(--smoke), 0.34) 42%, rgba(var(--smoke), 0.95));
+    }
+    @keyframes fly-across {
+      0% { opacity: 0; transform: translate3d(-42vw, 0, 0); }
+      5% { opacity: 1; }
+      92% { opacity: 1; }
+      100% { opacity: 0; transform: translate3d(calc(100vw + 330px), 0, 0); }
+    }
+    @keyframes top-view-roll {
+      0%, 18% { opacity: 1; transform: perspective(700px) rotateX(0deg) scaleY(1); }
+      32% { opacity: 0.55; transform: perspective(700px) rotateX(55deg) scaleY(0.82); }
+      39%, 100% { opacity: 0; transform: perspective(700px) rotateX(76deg) scaleY(0.62); }
+    }
+    @keyframes side-view-reveal {
+      0%, 24% { opacity: 0; transform: perspective(700px) rotateX(-62deg) scaleY(0.45); }
+      39%, 100% { opacity: 1; transform: perspective(700px) rotateX(0deg) scaleY(0.62); }
+    }
+    @keyframes trail-life {
+      0% { opacity: 0; transform: translateY(-50%) scaleX(0.04); }
+      12% { opacity: 0.82; transform: translateY(-50%) scaleX(0.55); }
+      42% { opacity: 0.72; transform: translateY(-50%) scaleX(1); }
+      82% { opacity: 0.58; transform: translateY(-50%) scaleX(1); }
+      100% { opacity: 0; transform: translateY(-50%) scaleX(0.72); }
     }
     .wrap {
       position: relative;
@@ -191,11 +254,15 @@
     @media (max-width: 640px) {
       .grid { grid-template-columns: 1fr; }
       article { min-height: 0; }
-      .plane { top: 102px; }
+      .flight { --size: clamp(165px, 46vw, 220px); }
+      .flight-top { --lane: 10%; }
+      .flight-middle { --lane: 43%; }
+      .flight-bottom { --lane: 76%; }
+      .contrail { width: 72vw; height: 8px; }
     }
     @media (prefers-reduced-motion: reduce) {
-      .cloud, .plane { animation: none; }
-      .plane { left: 42%; }
+      .cloud { animation: none; }
+      .airshow { display: none; }
     }
   </style>
 </head>
@@ -208,23 +275,28 @@
     <div class="cloud c5"></div>
   </div>
   <div class="hud" aria-hidden="true">
-    <div class="plane">
-      <span class="trail"></span>
-      <svg viewBox="0 0 220 64" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#9aa3ae"/>
-            <stop offset="0.55" stop-color="#6f7884"/>
-            <stop offset="1" stop-color="#d0d6dc"/>
-          </linearGradient>
-        </defs>
-        <polygon fill="#7b8490" points="118,34 62,58 96,34"/>
-        <polygon fill="#5c6570" points="48,32 28,8 58,32"/>
-        <polygon fill="url(#body)" points="216,32 168,28 128,27 112,22 96,28 48,30 18,29 6,27 2,32 6,37 18,35 48,34 96,36 112,42 128,37 168,36"/>
-        <polygon fill="#7ec8e0" points="158,28 140,23 126,28 140,30"/>
-        <rect x="4" y="29.5" width="10" height="5" rx="0.8" fill="#3a424c"/>
-        <rect x="4.5" y="30.4" width="4" height="3.2" fill="#ffb36a"/>
-      </svg>
+    <div class="airshow">
+      <div class="flight flight-top">
+        <span class="contrail"></span>
+        <div class="jet-views">
+          <img class="jet-sprite jet-top-view" src="assets/fighter-jet.png" alt="" />
+          <img class="jet-sprite jet-side-view" src="assets/fighter-jet-side.png" alt="" />
+        </div>
+      </div>
+      <div class="flight flight-middle">
+        <span class="contrail"></span>
+        <div class="jet-views">
+          <img class="jet-sprite jet-top-view" src="assets/fighter-jet.png" alt="" />
+          <img class="jet-sprite jet-side-view" src="assets/fighter-jet-side.png" alt="" />
+        </div>
+      </div>
+      <div class="flight flight-bottom">
+        <span class="contrail"></span>
+        <div class="jet-views">
+          <img class="jet-sprite jet-top-view" src="assets/fighter-jet.png" alt="" />
+          <img class="jet-sprite jet-side-view" src="assets/fighter-jet-side.png" alt="" />
+        </div>
+      </div>
     </div>
   </div>
   <div class="wrap">
