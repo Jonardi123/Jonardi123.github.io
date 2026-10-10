@@ -4,7 +4,24 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#7ec8ff" />
-  <title>Jonard — local layer</title>
+  <title>Jonard — local-first AI tools</title>
+  <meta name="description" content="Jonard builds local-first AI tools on a consumer GPU: Nebula, failtrace, Studio and RIFF. Routing, tools, memory, receipts, traces. The model is swappable. The layer is not." />
+  <meta name="author" content="Jonard" />
+  <link rel="canonical" href="https://jonardi123.github.io/" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jonardi123.github.io/" />
+  <meta property="og:site_name" content="Jonard" />
+  <meta property="og:title" content="Jonard — local-first AI tools" />
+  <meta property="og:description" content="Local-first AI tools. Consumer GPU. No cloud required to chat. The model is swappable. The layer is not." />
+  <meta property="og:image" content="https://jonardi123.github.io/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Jonard — local layer portfolio" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <script>try{if(localStorage.getItem("theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Source+Sans+3:wght@400;500;600&display=swap" />
   <style>
     :root {
@@ -130,6 +147,7 @@
     html.thunder h1,html.thunder .lede,html.thunder header { text-shadow:0 0 9px rgba(210,232,255,.12); }
     .ch { position:relative; display:inline-block; }
     .ch.ital { font-style:italic; color:var(--acc); }
+    .word { white-space:nowrap; }
     .splash { position:absolute; left:50%; top:30%; width:3px; height:8px; margin:-4px 0 0 -1.5px; border-radius:70% 70% 60% 60%; pointer-events:none; background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(185,220,255,.55) 55%,rgba(185,220,255,0)); filter:drop-shadow(0 0 2px rgba(180,220,255,.3)); transform-origin:center top; animation:splash .42s cubic-bezier(.2,.7,.25,1) forwards; }
     @keyframes splash { 0%{transform:translateY(-2px) scale(.45,.3);opacity:0;}32%{transform:translateY(0) scale(.8,1.2);opacity:.72;}100%{transform:translateY(7px) scale(.45,.65);opacity:0;} }
     .wet-clip { position:absolute; inset:0; pointer-events:none; color:transparent; background-image:radial-gradient(circle at 12% 40%,rgba(255,255,255,.45) 0 1.1px,transparent 1.8px),radial-gradient(circle at 28% 62%,rgba(220,240,255,.38) 0 1px,transparent 1.6px),radial-gradient(circle at 47% 28%,rgba(255,255,255,.5) 0 1.3px,transparent 1.9px),radial-gradient(circle at 63% 70%,rgba(200,230,255,.34) 0 1px,transparent 1.6px),radial-gradient(circle at 81% 36%,rgba(255,255,255,.42) 0 1.2px,transparent 1.8px),radial-gradient(circle at 91% 58%,rgba(220,240,255,.32) 0 .9px,transparent 1.5px); -webkit-background-clip:text;background-clip:text;opacity:0; }
@@ -157,7 +175,21 @@
     .actions { display:flex;align-items:center;gap:9px; }
     .brand,.live{color:var(--acc)}.brand{text-transform:uppercase;font-weight:600}.live::before{content:"";display:inline-block;width:7px;height:7px;background:var(--acc);border-radius:50%;margin-right:8px;box-shadow:0 0 10px var(--acc2)}
     .theme,.sound-toggle { border:1px solid var(--card-border);background:var(--pill);color:var(--fg);border-radius:999px;padding:5px 10px;font:inherit;font-size:12px;cursor:pointer;transition:box-shadow .18s ease; }
-    h1{font-family:"Newsreader",Georgia,serif;font-size:clamp(56px,17vw,96px);font-weight:400;line-height:.88;letter-spacing:-.03em;margin:0 0 14px}.lede{max-width:36rem;color:var(--dim);margin:0 0 22px}.rule{display:inline-block;border:1px solid var(--card-border);background:var(--pill);color:var(--acc);padding:10px 14px;margin-bottom:32px;border-radius:999px;font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:18px;transition:box-shadow .18s ease}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}a.card{text-decoration:none;color:inherit}article{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--card-border);border-radius:22px;padding:18px;min-height:156px;display:flex;flex-direction:column;transition:box-shadow .18s ease,transform .3s ease}.idx{color:var(--acc);font-size:12px;letter-spacing:.14em;font-weight:600}article h2{font-family:"Newsreader",Georgia,serif;font-size:30px;font-weight:500;margin:10px 0 8px}article p{margin:0;color:var(--dim);flex:1}article .go{margin-top:16px;font-size:13px;font-weight:600}.stack{margin-top:28px;display:flex;flex-wrap:wrap;gap:8px}.stack span{border:1px solid var(--card-border);background:var(--pill);padding:7px 12px;color:var(--dim);font-size:13px;border-radius:999px}footer{margin-top:40px;color:var(--dim);font-size:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}footer a{color:var(--dim)}
+    h1{font-family:"Newsreader",Georgia,serif;font-size:clamp(56px,17vw,96px);font-weight:400;line-height:.88;letter-spacing:-.03em;margin:0 0 14px}.lede{max-width:36rem;color:var(--dim);margin:0 0 22px}.rule{display:inline-block;border:1px solid var(--card-border);background:var(--pill);color:var(--acc);padding:10px 14px;margin-bottom:32px;border-radius:999px;font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:18px;transition:box-shadow .18s ease}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}a.card{text-decoration:none;color:inherit}article{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--card-border);border-radius:22px;padding:18px;min-height:156px;display:flex;flex-direction:column;transition:box-shadow .18s ease,transform .3s ease}.idx{color:var(--acc);font-size:12px;letter-spacing:.14em;font-weight:600}article h3{font-family:"Newsreader",Georgia,serif;font-size:30px;font-weight:500;margin:10px 0 8px}article p{margin:0;color:var(--dim);flex:1}article .go{margin-top:16px;font-size:13px;font-weight:600}.stack{margin-top:28px;display:flex;flex-wrap:wrap;gap:8px}.stack li{border:1px solid var(--card-border);background:var(--pill);padding:7px 12px;color:var(--dim);font-size:13px;border-radius:999px}footer{margin-top:40px;color:var(--dim);font-size:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}footer a{color:var(--dim)}
+    .visually-hidden{position:absolute!important;clip-path:inset(50%)!important;overflow:hidden!important;width:1px!important;height:1px!important;margin:-1px!important;padding:0!important;border:0!important;white-space:nowrap!important}
+    :where(a:any-link,button):focus-visible{outline:3px solid var(--acc);outline-offset:3px;border-radius:999px}
+    .theme,.sound-toggle{min-block-size:28px;min-inline-size:44px}
+    .sound-toggle .state{display:inline-block;min-width:2.1em;margin-left:4px;color:var(--acc);font-weight:600}
+    .sound-toggle[aria-pressed="true"]{border-color:var(--acc2)}
+    article h3 a{color:inherit;text-decoration:none}
+    article h3 a::after{content:"";position:absolute;inset:0;border-radius:22px}
+    article h3 a:focus-visible{outline:none}
+    article:has(h3 a:focus-visible){outline:3px solid var(--acc);outline-offset:3px}
+    article:has(h3 a:hover),article:has(h3 a:focus-visible){transform:translateY(-2px);box-shadow:0 10px 26px rgba(11,42,74,.14)}
+    .grid{list-style:none;margin:0;padding:0}.grid>li{display:flex}.grid>li>article{flex:1}.stack{list-style:none;padding:0;margin-bottom:0}.rule{margin-top:0}
+    @supports not selector(:has(a)){article h3 a:focus-visible{outline:3px solid var(--acc);outline-offset:3px}}
+    @media(pointer:coarse){.theme,.sound-toggle{min-block-size:40px;padding-inline:14px}}
+    @media(forced-colors:active){article,.theme,.sound-toggle,.rule,.stack li{border:1px solid CanvasText}.sky,.hud,.puddle{display:none}}
     @media(max-width:640px){.moon{width:70px;right:7%;top:8%}.grid{grid-template-columns:1fr}.actions{gap:6px}.live{display:none}article{min-height:0}}
     @media(prefers-reduced-motion:reduce){.cloud,.loom,.rain,.drop,.splash,.lightning,.bolt,.puddle::before,.puddle::after,.storm-jet{animation:none!important}.airshow{display:none}.wrap{transform:none!important}}
   </style>
@@ -171,33 +203,38 @@
     </div>
     <div class="loom l1"></div><div class="loom l2"></div><div class="loom l3"></div>
     <div class="rain" id="rain"></div><div class="lightning" id="lightning"></div>
-    <img class="storm-jet" id="stormJet" src="assets/fighter-jet-side.png" alt="" />
+    <img class="storm-jet" id="stormJet" src="assets/fighter-jet-side.webp" alt="" width="640" height="360" decoding="async" />
   </div>
   <div class="puddle" aria-hidden="true"></div>
   <div class="hud" aria-hidden="true"><div class="airshow">
-    <div class="flight flight-top"><span class="contrail"></span><div class="jet-views"><img class="jet-sprite jet-top-view" src="assets/fighter-jet.png" alt="" /><img class="jet-sprite jet-side-view" src="assets/fighter-jet-side.png" alt="" /></div></div>
-    <div class="flight flight-middle"><span class="contrail"></span><div class="jet-views"><img class="jet-sprite jet-top-view" src="assets/fighter-jet.png" alt="" /><img class="jet-sprite jet-side-view" src="assets/fighter-jet-side.png" alt="" /></div></div>
-    <div class="flight flight-bottom"><span class="contrail"></span><div class="jet-views"><img class="jet-sprite jet-top-view" src="assets/fighter-jet.png" alt="" /><img class="jet-sprite jet-side-view" src="assets/fighter-jet-side.png" alt="" /></div></div>
+    <div class="flight flight-top"><span class="contrail"></span><div class="jet-views"><img class="jet-sprite jet-top-view" src="assets/fighter-jet.webp" alt="" width="640" height="360" /><img class="jet-sprite jet-side-view" src="assets/fighter-jet-side.webp" alt="" width="640" height="360" /></div></div>
+    <div class="flight flight-middle"><span class="contrail"></span><div class="jet-views"><img class="jet-sprite jet-top-view" src="assets/fighter-jet.webp" alt="" width="640" height="360" /><img class="jet-sprite jet-side-view" src="assets/fighter-jet-side.webp" alt="" width="640" height="360" /></div></div>
+    <div class="flight flight-bottom"><span class="contrail"></span><div class="jet-views"><img class="jet-sprite jet-top-view" src="assets/fighter-jet.webp" alt="" width="640" height="360" /><img class="jet-sprite jet-side-view" src="assets/fighter-jet-side.webp" alt="" width="640" height="360" /></div></div>
   </div></div>
   <div class="wrap" id="wrap">
-    <header><div class="brand">local layer / 570</div><div class="actions"><div class="live">eval first</div><button class="sound-toggle" id="sound" type="button" aria-pressed="false">Sound off</button><button class="theme" id="theme" type="button">Dark</button></div></header>
-    <div class="title-wrap"><h1 id="title"><span class="ch">J</span><span class="ch">o</span><span class="ch">n</span><span class="ch ital">a</span><span class="ch ital">r</span><span class="ch ital">d</span></h1><div class="wet-clip" aria-hidden="true">Jonard</div></div>
-    <div class="lede-wrap"><p class="lede" id="lede"></p></div>
-    <div class="rule">If I cannot eval it, I do not train it.</div>
-    <div class="grid">
-      <a class="card" href="https://github.com/Jonardi123/nebula"><article><div class="idx">01</div><h2>Nebula</h2><p>Operating layer on LM Studio. Windows + iPhone. The model is just a backend.</p><div class="go">Open repo →</div></article></a>
-      <a class="card" href="https://github.com/Jonardi123/failtrace"><article><div class="idx">02</div><h2>failtrace</h2><p>Failure → diagnosis → different call. Generator, harness, SFT pack.</p><div class="go">Open repo →</div></article></a>
-      <a class="card" href="https://github.com/Jonardi123/local-chat-studio"><article><div class="idx">03</div><h2>Studio</h2><p>Chat client for anything that speaks OpenAI-local. Private box, not a tab.</p><div class="go">Open repo →</div></article></a>
-      <a class="card" href="https://github.com/Jonardi123/RIFF"><article><div class="idx">04</div><h2>RIFF</h2><p>YouTube → MP3 on loopback only. Stays on the machine.</p><div class="go">Open repo →</div></article></a>
-    </div>
-    <div class="stack"><span>Python</span><span>TypeScript</span><span>Tauri</span><span>React</span><span>LM Studio</span><span>QLoRA</span><span>GGUF</span><span>RX 570</span></div>
+    <header><div class="brand">local layer / 570</div><div class="actions"><div class="live">eval first</div><button class="sound-toggle" id="sound" type="button" aria-pressed="false">Sound<span class="state" aria-hidden="true">off</span></button><button class="theme" id="theme" type="button" aria-label="Switch to dark theme">Dark</button></div></header>
+    <main id="content">
+    <div class="title-wrap"><h1 id="title"><span class="visually-hidden">Jonard</span><span aria-hidden="true"><span class="ch">J</span><span class="ch">o</span><span class="ch">n</span><span class="ch ital">a</span><span class="ch ital">r</span><span class="ch ital">d</span></span></h1><div class="wet-clip" aria-hidden="true">Jonard</div></div>
+    <div class="lede-wrap"><p class="lede" id="lede">Local-first AI tools. Consumer GPU. No cloud required to chat. I build the product around the model — routing, tools, memory, receipts, traces. The model is swappable. The layer is not.</p></div>
+    <p class="rule">If I cannot eval it, I do not train it.</p>
+    <h2 class="visually-hidden">Projects</h2>
+    <ul class="grid" role="list">
+      <li><article><div class="idx" aria-hidden="true">01</div><h3 class="card-title"><a href="https://github.com/Jonardi123/nebula">Nebula</a></h3><p>Operating layer on LM Studio. Windows + iPhone. The model is just a backend.</p><div class="go" aria-hidden="true">Open repo →</div></article></li>
+      <li><article><div class="idx" aria-hidden="true">02</div><h3 class="card-title"><a href="https://github.com/Jonardi123/failtrace">failtrace</a></h3><p>Failure → diagnosis → different call. Generator, harness, SFT pack.</p><div class="go" aria-hidden="true">Open repo →</div></article></li>
+      <li><article><div class="idx" aria-hidden="true">03</div><h3 class="card-title"><a href="https://github.com/Jonardi123/local-chat-studio">Studio</a></h3><p>Chat client for anything that speaks OpenAI-local. Private box, not a tab.</p><div class="go" aria-hidden="true">Open repo →</div></article></li>
+      <li><article><div class="idx" aria-hidden="true">04</div><h3 class="card-title"><a href="https://github.com/Jonardi123/RIFF">RIFF</a></h3><p>YouTube → MP3 on loopback only. Stays on the machine.</p><div class="go" aria-hidden="true">Open repo →</div></article></li>
+    </ul>
+    <h2 class="visually-hidden">Stack</h2>
+    <ul class="stack" role="list"><li>Python</li><li>TypeScript</li><li>Tauri</li><li>React</li><li>LM Studio</li><li>QLoRA</li><li>GGUF</li><li>RX 570</li></ul>
+    </main>
     <footer><span>Albania · built on the 570</span><a href="https://github.com/Jonardi123">github.com/Jonardi123</a></footer>
   </div>
   <script>
     (function(){
       var root=document.documentElement,btn=document.getElementById("theme"),soundBtn=document.getElementById("sound"),meta=document.querySelector('meta[name="theme-color"]'),rain=document.getElementById("rain"),lightning=document.getElementById("lightning"),lede=document.getElementById("lede"),wrap=document.getElementById("wrap"),skyTop=document.getElementById("skyTop");
-      var text="Local-first AI tools. Consumer GPU. No cloud required to chat. I build the product around the model — routing, tools, memory, receipts, traces. The model is swappable. The layer is not.";
-      lede.innerHTML=text.split("").map(function(c){return c===" "?" ":"<span class=\"ch\">"+c+"</span>"}).join("");
+      var text=lede.textContent.trim(),esc=function(c){return c==="&"?"&amp;":c==="<"?"&lt;":c===">"?"&gt;":c};
+      var reduceMotion=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      lede.innerHTML="<span class=\"visually-hidden\">"+text.replace(/[&<>]/g,esc)+"</span><span aria-hidden=\"true\">"+text.split(" ").map(function(w){return "<span class=\"word\">"+w.split("").map(function(c){return "<span class=\"ch\">"+esc(c)+"</span>"}).join("")+"</span>"}).join(" ")+"</span>";
       if(rain&&!rain.childNodes.length){var html="";for(var i=0;i<62;i++){var dur=(.5+Math.random()*.52).toFixed(2)+"s";html+='<span class="drop" style="left:'+(i*1.65+Math.random()*1.4)+'%;--fall:'+dur+';animation-delay:'+(Math.random()*1.4)+'s"></span>'}rain.innerHTML=html}
       if(wrap&&skyTop){var scrollTick=false;function syncSky(){skyTop.style.transform="translate3d(0,"+(-wrap.scrollTop)+"px,0)";scrollTick=false}wrap.addEventListener("scroll",function(){if(!scrollTick){scrollTick=true;requestAnimationFrame(syncSky)}},{passive:true});syncSky()}
       var hitTimer=null,rainTimer=null,thunderTimer=null,gustTimer=null,stormTimer=null,jetTimer=null,audioCtx=null,soundOn=false,activeCloud=null;
@@ -215,8 +252,8 @@
       function scheduleStormCycle(){if(stormTimer)clearTimeout(stormTimer);if(!root.classList.contains("raining"))return;stormTimer=setTimeout(function(){var r=Math.random();setStorm(r<.28?"light":r<.76?"medium":"heavy");scheduleStormCycle()},9000+Math.random()*13000)}
       function scheduleJet(){if(jetTimer)clearTimeout(jetTimer);if(!root.classList.contains("raining"))return;jetTimer=setTimeout(function(){if(Math.random()<.38){root.classList.remove("jet-pass");void root.offsetWidth;root.classList.add("jet-pass");setTimeout(function(){root.classList.remove("jet-pass")},6000)}scheduleJet()},18000+Math.random()*26000)}
       function stopWeatherTimers(){[thunderTimer,gustTimer,stormTimer,jetTimer].forEach(function(t){if(t)clearTimeout(t)});thunderTimer=gustTimer=stormTimer=jetTimer=null;if(activeCloud){activeCloud.classList.remove("strike");activeCloud=null}root.classList.remove("thunder","gust","jet-pass","storm-light","storm-medium","storm-heavy")}
-      function apply(mode){root.classList.remove("raining");stopHits();stopWeatherTimers();if(rainTimer){clearTimeout(rainTimer);rainTimer=null}root.setAttribute("data-theme",mode);try{localStorage.setItem("theme",mode)}catch(e){}if(btn)btn.textContent=mode==="dark"?"Light":"Dark";if(meta)meta.setAttribute("content",mode==="dark"?"#06101c":"#7ec8ff");document.querySelectorAll(".loom").forEach(function(n){n.style.animation="none";void n.offsetWidth;n.style.animation=""});if(mode==="dark"){rainTimer=setTimeout(function(){root.classList.add("raining");setStorm("medium");hit();scheduleThunder();scheduleGust();scheduleStormCycle();scheduleJet()},3000)}}
-      function setSound(on){soundOn=on;if(on)ensureAudio();if(soundBtn){soundBtn.textContent=on?"Sound on":"Sound off";soundBtn.setAttribute("aria-pressed",on?"true":"false")}try{localStorage.setItem("storm-sound",on?"1":"0")}catch(e){}}
+      function apply(mode){root.classList.remove("raining");stopHits();stopWeatherTimers();if(rainTimer){clearTimeout(rainTimer);rainTimer=null}root.setAttribute("data-theme",mode);try{localStorage.setItem("theme",mode)}catch(e){}if(btn){btn.textContent=mode==="dark"?"Light":"Dark";btn.setAttribute("aria-label",mode==="dark"?"Switch to light theme":"Switch to dark theme")}if(meta)meta.setAttribute("content",mode==="dark"?"#06101c":"#7ec8ff");document.querySelectorAll(".loom").forEach(function(n){n.style.animation="none";void n.offsetWidth;n.style.animation=""});if(mode==="dark"){rainTimer=setTimeout(function(){root.classList.add("raining");setStorm("medium");if(!reduceMotion){hit();scheduleThunder();scheduleJet()}scheduleGust();scheduleStormCycle()},3000)}}
+      function setSound(on){soundOn=on;if(on)ensureAudio();if(soundBtn){var st=soundBtn.querySelector(".state");if(st)st.textContent=on?"on":"off";soundBtn.setAttribute("aria-pressed",on?"true":"false")}try{localStorage.setItem("storm-sound",on?"1":"0")}catch(e){}}
       var saved=null,savedSound="0";try{saved=localStorage.getItem("theme");savedSound=localStorage.getItem("storm-sound")||"0"}catch(e){}
       setSound(savedSound==="1");apply(saved==="dark"?"dark":"light");
       if(btn)btn.addEventListener("click",function(){ensureAudio();apply(root.getAttribute("data-theme")==="dark"?"light":"dark")});
